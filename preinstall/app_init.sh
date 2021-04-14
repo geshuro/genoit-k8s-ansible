@@ -108,7 +108,7 @@ showmount -e localhost
 ######################################################################################
 #init k8s remoto
 #!/bin/bash
-sudo subscription-manager register --username cdnunez --password 2020ArquitecturaCloud --auto-attach
+sudo subscription-manager register --username genoit --password genoitpass --auto-attach
 sudo subscription-manager repos --enable rhel-7-server-ansible-2.9-rpms
 #crear usuario admcuc
 adduser admcuc; echo admcuc | passwd admcuc --stdin; usermod -aG wheel admcuc
