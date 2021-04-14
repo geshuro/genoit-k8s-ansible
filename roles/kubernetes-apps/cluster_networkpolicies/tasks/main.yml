@@ -1,0 +1,105 @@
+---
+
+- name: "Kubernetes Apps | Crear directorio para manifiesto network policies (en {{ groups['kube-master'][0] }})"
+  file:
+    path: "{{ networkpolicies_config_dir_temp }}"
+    group: "{{ usuario_networkpolicies_group }}"
+    state: directory
+    owner: kube
+    recurse: yes
+    mode: 0700
+  run_once: yes
+  when: 
+    - inventory_hostname == groups['kube-master'][0] 
+    - networkpolicies_ingress_enabled|default(false) or 
+      networkpolicies_egress_enabled|default(false)
+  delegate_to: "{{ groups['kube-master'][0] }}"
+
+# politicas_ingress_basicas_templates
+- name: Kubernetes Apps | Denegar todo el tráfico a una aplicación
+  import_tasks: deny-ingress-all-app.yml
+  when:
+  - networkpolicies_ingress_enabled|default(false)
+  - networkpolicies_ingress_deny_all_trafico_enabled|default(false)
+
+- name: Kubernetes Apps | Limitar el tráfico de una aplicación
+  import_tasks: limit-ingress-app.yml
+  when:
+  - networkpolicies_ingress_enabled|default(false)
+  - networkpolicies_ingress_limit_all_trafico_enabled|default(false)
+
+- name: Kubernetes Apps | Permitir todo el tráfico a una aplicación
+  import_tasks: allow-ingress-app.yml
+  when:
+  - networkpolicies_ingress_enabled|default(false)
+  - networkpolicies_ingress_allow_all_trafico_enabled|default(false)
+
+# politicas_ingress_namespace_templates
+- name: Kubernetes Apps | Denegar todo el tráfico de un namespace
+  import_tasks: deny-ingress-all-trafico-en-ns.yml
+  when:
+  - networkpolicies_ingress_enabled|default(false)
+  - networkpolicies_ingress_deny_all_trafico_en_ns_enabled|default(false)
+
+- name: Kubernetes Apps | Denegar todo el tráfico de otros namespace
+  import_tasks: deny-ingress-trafico-from-otros-ns.yml
+  when:
+  - networkpolicies_ingress_enabled|default(false)
+  - networkpolicies_ingress_deny_all_trafico_otros_ns_enabled|default(false)
+
+- name: Kubernetes Apps | Permitir todo el tráfico de una aplicacion desde otros namespace
+  import_tasks: allow-ingress-trafico-from-all-ns-a-pod.yml
+  when:
+  - networkpolicies_ingress_enabled|default(false)
+  - networkpolicies_ingress_allow_all_trafico_otros_ns_a_pod_enabled|default(false)
+
+- name: Kubernetes Apps | Permitir todo el tráfico de un namespace hacia una aplicacion
+  import_tasks: allow-ingress-trafico-from-a-ns-a-app.yml
+  when:
+  - networkpolicies_ingress_enabled|default(false)
+  - networkpolicies_ingress_allow_trafico_from_a_ns_a_pod_enabled|default(false)
+
+- name: Kubernetes Apps | Permitir el tráfico de una aplicacion mediante un puerto
+  import_tasks: allow-ingress-trafico-desde-algunas-app-en-otros-ns.yml
+  when:
+  - networkpolicies_ingress_enabled|default(false)
+  - networkpolicies_ingress_allow_trafico_algunos_ns_a_app_enabled|default(false)
+
+# politicas_ingress_avanzadas_templates
+- name: Kubernetes Apps | Permitir el tráfico de una aplicacion mediante un puerto
+  import_tasks: allow-ingress-trafico-solo-un-puerto.yml
+  when:
+  - networkpolicies_ingress_enabled|default(false)
+  - networkpolicies_ingress_allow_trafico_solo_un_puerto_app_enabled|default(false)
+
+- name: Kubernetes Apps | Permitir el tráfico de una aplicacion mediante multiple selectores
+  import_tasks: allow-ingress-trafico-con-multiple-selectors.yml
+  when:
+  - networkpolicies_ingress_enabled|default(false)
+  - networkpolicies_ingress_allow_trafico_con_multiple_selectors_app_enabled|default(false)
+
+###############
+# Control del tráfico saliente
+- name: Kubernetes Apps | Denegar tráfico de salida de una aplicación
+  import_tasks: deny-egress-trafico-de-una-app.yml
+  when:
+  - networkpolicies_egress_enabled|default(false)
+  - networkpolicies_egress_deny_all_trafico_app_enabled|default(false)
+
+- name: Kubernetes Apps | Denegar todo el tráfico no incluido en la lista blanca de un namespace
+  import_tasks: deny-egress-all-trafico-de-ns.yml
+  when:
+  - networkpolicies_egress_enabled|default(false)
+  - networkpolicies_egress_deny_all_trafico_ns_enabled|default(false)
+
+- name: Kubernetes Apps | Denegar todo el tráfico menos DNS no incluido en la lista blanca de un namespace
+  import_tasks: deny-egress-all-menos-dns-trafico-de-ns.yml
+  when:
+  - networkpolicies_egress_enabled|default(false)
+  - networkpolicies_egress_deny_all_menos_dns_trafico_ns_enabled|default(false)
+
+- name: Kubernetes Apps | Denegar todo el tráfico de salida externo
+  import_tasks: deny-egress-all-trafico-external.yml
+  when:
+  - networkpolicies_egress_enabled|default(false)
+  - networkpolicies_egress_deny_all_trafico_external_enabled|default(false)

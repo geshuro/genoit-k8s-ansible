@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: "{{ egress_deny_all_menos_dns_trafico_ns_namespace }}-deny-egress-all-menos-dns-trafico-de-ns"
+  namespace: {{ egress_deny_all_menos_dns_trafico_ns_namespace }}
+spec:
+  policyTypes:
+  - Egress
+  podSelector: {}
+  egress:
+  # Permitir resolucion DNS
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP

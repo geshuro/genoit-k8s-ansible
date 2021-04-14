@@ -1,0 +1,123 @@
+---
+#Carpeta temporal de manifiestos
+networkpolicies_config_dir_temp: /tmp/networkpolicies
+usuario_networkpolicies_group: root
+networkpolicies_ingress_config_dir_temp: /tmp/networkpolicies/ingress
+networkpolicies_egress_config_dir_temp: /tmp/networkpolicies/egress
+
+#Habilitar policitas de ingreso
+networkpolicies_ingress_enabled: false
+#Habilitar policitas de salida
+networkpolicies_egress_enabled: false
+
+
+#Denegar todo el tráfico a una aplicación
+networkpolicies_ingress_deny_all_trafico_enabled: false
+deny_all_trafico_namespace: "default"
+deny_all_trafico_nombre: "nombrellabelpodx-deny-all"
+deny_all_trafico_pod_matchlabels:
+  app: "web"
+
+#Limitar el tráfico de una aplicación
+networkpolicies_ingress_limit_all_trafico_enabled: false
+limit_all_trafico_namespace: "default"
+limit_all_trafico_nombre: "nombrellabelpodx-allow"
+limit_all_trafico_pod_matchlabels:
+  app: "web"
+
+#Permitir todo el tráfico a una aplicación
+networkpolicies_ingress_allow_all_trafico_enabled: false
+allow_all_trafico_nombre: "nombrellabelpodx-allow-all"
+allow_all_trafico_namespace: "default"
+allow_all_trafico_pod_matchlabels:
+  app: "web"  
+
+
+#Denegar todo el tráfico de un namespace
+networkpolicies_ingress_deny_all_trafico_en_ns_enabled: false
+deny_all_trafico_en_ns_namespace: "default"
+
+#Denegar todo el tráfico de otros namespace
+networkpolicies_ingress_deny_all_trafico_otros_ns_enabled: false
+deny_all_trafico_otros_ns_namespace: "default"
+
+#Permitir todo el tráfico de una aplicacion desde otros namespace
+networkpolicies_ingress_allow_all_trafico_otros_ns_a_pod_enabled: false
+allow_all_trafico_otros_ns_a_pod_namespace: "default"
+allow_all_trafico_otros_ns_a_pod_name: "default"
+allow_all_trafico_otros_ns_a_pod_matchlabels:
+  app: "web"
+
+#Permitir todo el tráfico de un namespace hacia una aplicacion
+networkpolicies_ingress_allow_trafico_from_a_ns_a_pod_enabled: false
+allow_trafico_from_a_ns_a_pod_namespace: "default"
+allow_trafico_from_a_ns_a_pod_name: "app-web"
+allow_trafico_from_a_ns_a_pod_matchlabels:
+  app: "web"
+allow_trafico_from_a_ns_a_pod_matchlabels_ns:
+  labelns: "ns-bd"
+
+#Permitir el tráfico de algunos pods en otro namespace
+networkpolicies_ingress_allow_trafico_algunos_ns_a_app_enabled: false
+allow_trafico_algunos_ns_a_app_namespace: "default"
+allow_trafico_algunos_ns_a_app_name: "app-allow-all-ns-app"
+allow_trafico_algunos_ns_a_app_matchlabels:
+  app: "web"
+allow_trafico_algunos_ns_a_app_matchlabels_ns:
+  labelns: "ns-bd"
+allow_trafico_algunos_ns_a_app_matchlabels_app:
+  app: "ns-app"
+
+#Permitir el tráfico de una aplicacion mediante un puerto
+networkpolicies_ingress_allow_trafico_solo_un_puerto_app_enabled: false
+allow_trafico_solo_un_puerto_app_name: "app-allow-port"
+allow_trafico_solo_un_puerto_app_namespace: "default"
+allow_trafico_solo_un_puerto_app_nro_puerto: 6000
+allow_trafico_solo_un_puerto_app_matchlabels:
+  app: "web"
+allow_trafico_solo_un_puerto_app_matchlabels_app:
+  app: "ns-app"
+
+#Permitir el tráfico de una aplicacion mediante multiple selectores
+networkpolicies_ingress_allow_trafico_con_multiple_selectors_app_enabled: false
+allow_trafico_con_multiple_selectors_app_name: "app-allow-servicios"
+allow_trafico_con_multiple_selectors_app_namespace: "default"
+allow_trafico_con_multiple_selectors_app_matchlabels:
+  app: "web"
+allow_trafico_solo_un_puerto_app_podselector:
+  - podSelector:
+      matchLabels:
+        app: bookstore
+        role: search
+  - podSelector:
+      matchLabels:
+        app: bookstore
+        role: api
+  - podSelector:
+      matchLabels:
+        app: inventory
+        role: web
+
+
+#Egress
+#Denegar tráfico de salida de una aplicación
+networkpolicies_egress_deny_all_trafico_app_enabled: false
+deny_all_trafico_app_nombre: "nombrellabelpodx-deny-egress"
+deny_all_trafico_app_namespace: "default"
+deny_all_trafico_app_matchlabels:
+  app: "web"  
+
+#Denegar todo el tráfico no incluido en la lista blanca de un namespace
+networkpolicies_egress_deny_all_trafico_ns_enabled: false
+egress_deny_all_trafico_ns_namespace: "default"
+
+#Denegar todo el tráfico menos DNS no incluido en la lista blanca de un namespace
+networkpolicies_egress_deny_all_menos_dns_trafico_ns_enabled: false
+egress_deny_all_menos_dns_trafico_ns_namespace: "default"
+
+#Denegar todo el tráfico de salida externo
+networkpolicies_egress_deny_all_trafico_external_enabled: false
+egress_deny_all_trafico_external_nombre: "nombrellabelpodx-external-egress"
+egress_deny_all_trafico_external_namespace: "default"
+egress_deny_all_trafico_external_matchlabels:
+  app: "web"  

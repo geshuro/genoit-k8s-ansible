@@ -1,0 +1,101 @@
+all:
+  vars:
+    ansible_connection: ssh
+    ansible_user: admcuc
+    ansible_become: true
+    ansible_ssh_private_key_file: /tmp/kp/kp-tec-devops-test2.pem
+  hosts:
+    master1:
+      ip: 10.36.9.84
+      access_ip: 10.36.9.84
+      ansible_host: 10.36.9.84
+    master2:
+      ip: 10.36.9.63
+      access_ip: 10.36.9.63
+      ansible_host: 10.36.9.63
+    master3:
+      ip: 10.36.9.119
+      access_ip: 10.36.9.119
+      ansible_host: 10.36.9.119
+    loadbalancer1:
+      ip: 10.36.9.64
+      access_ip: 10.36.9.64
+      ansible_host: 10.36.9.64
+      node_labels:
+        node-role.kubernetes.io/node-loadbalancer: "true"
+    micro1:
+      ip: 10.36.9.11
+      access_ip: 10.36.9.11
+      ansible_host: 10.36.9.11
+      node_labels:
+        node-role.kubernetes.io/node-micro: ""
+    micro2:
+      ip: 10.36.9.106
+      access_ip: 10.36.9.106
+      ansible_host: 10.36.9.106
+      node_labels:
+        node-role.kubernetes.io/node-micro: ""
+    micro3:
+      ip: 10.36.9.103
+      access_ip: 10.36.9.103
+      ansible_host: 10.36.9.103
+      node_labels:
+        node-role.kubernetes.io/node-micro: ""                
+    frontend1:
+      ip: 10.36.9.92
+      access_ip: 10.36.9.92
+      ansible_host: 10.36.9.92
+      node_labels:
+        node-role.kubernetes.io/node-frontend: ""
+    frontend2:
+      ip: 10.36.9.100
+      access_ip: 10.36.9.100
+      ansible_host: 10.36.9.100
+      node_labels:
+        node-role.kubernetes.io/node-frontend: ""        
+    tools1:
+      ip: 10.36.9.12
+      access_ip: 10.36.9.12
+      ansible_host: 10.36.9.12
+      node_labels:
+        node-role.kubernetes.io/node-tools: ""
+    tools2:
+      ip: 10.36.9.44
+      access_ip: 10.36.9.44
+      ansible_host: 10.36.9.44
+      node_labels:
+        node-role.kubernetes.io/node-tools: ""
+    tools3:
+      ip: 10.36.9.113
+      access_ip: 10.36.9.113
+      ansible_host: 10.36.9.113
+      node_labels:
+        node-role.kubernetes.io/node-tools: ""        
+  children:
+    kube-master:
+      hosts:
+        master1:
+        master2:
+        master3:
+    etcd:
+      hosts:
+        master1:
+        master2:
+        master3:          
+    kube-node:
+      hosts:
+        loadbalancer1:        
+        micro1:
+        micro2:
+        micro3:                  
+        frontend1:
+        frontend2:
+        tools1:
+        tools2:
+        tools3:          
+    k8s-cluster:
+      children:
+        kube-master:
+        kube-node:
+    calico-rr:
+      hosts: {}

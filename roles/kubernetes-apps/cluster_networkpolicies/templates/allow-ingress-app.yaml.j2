@@ -1,0 +1,11 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ allow_all_trafico_nombre }}
+  namespace: {{ allow_all_trafico_namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      {{ allow_all_trafico_pod_matchlabels | to_nice_yaml(indent=2) | trim | indent(width=6) }}
+  ingress:
+  - {}
